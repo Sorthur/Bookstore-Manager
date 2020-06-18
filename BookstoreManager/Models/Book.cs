@@ -16,13 +16,14 @@ namespace BookstoreManager.Models
         public bool IsHardCover { get; set; }
         public int Quantity { get; set; }
         public bool IsAvailable { get; set; }
+        public decimal Price { get; set; }
 
         public Book()
         {
             IsAvailable = true;
         }
 
-        public Book(string title, string author, int year, int edition, int numberOfPages, bool isHardCover, int quantity = 1)
+        public Book(string title, string author, int year, int edition, int numberOfPages, bool isHardCover, decimal price, int quantity = 1)
         {
             Title = title;
             Author = author;
@@ -31,6 +32,7 @@ namespace BookstoreManager.Models
             NumberOfPages = numberOfPages;
             IsHardCover = isHardCover;
             Quantity = quantity;
+            Price = price;
             IsAvailable = true;
         }
     }
