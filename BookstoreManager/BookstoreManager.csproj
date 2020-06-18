@@ -191,6 +191,7 @@
     <Content Include="Views\GroupingQueries\Index.cshtml" />
     <Content Include="Views\GroupingQueries\Result.cshtml" />
     <Content Include="Views\Error\NoDb.cshtml" />
+    <Content Include="Views\Books\BookExists.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

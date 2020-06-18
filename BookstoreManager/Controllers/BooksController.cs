@@ -45,6 +45,10 @@ namespace BookstoreManager.Controllers
                 {
                     try
                     {
+                        if (context.Books.Any(b => b.Title == book.Title) && context.Books.Any(b => b.Edition == book.Edition))
+                        {
+                            return View("BookExists");
+                        }
                         context.Books.Add(book);
                         await context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
