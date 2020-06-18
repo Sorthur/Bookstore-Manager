@@ -10,13 +10,15 @@ namespace BookstoreManager.Models
         public int Id { get; set; }
         public Book OrderedBook { get; set; }
         public int NumberOfOrderedBooks { get; set; }
+        public decimal Price { get; set; }
 
         public Order() { }
 
-        public Order(Book orderedBook, int numberOfOrderedBooks)
+        public Order(Book orderedBook, int numberOfOrderedBooks, decimal price)
         {
             OrderedBook = orderedBook;
             NumberOfOrderedBooks = numberOfOrderedBooks;
+            Price = price;
         }
     }
 }
