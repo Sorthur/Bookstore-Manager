@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div class="list-group">
+    @Html.ActionLink("Liczba książek", "GetNumberOfBooks", null, new { @class = "list-group-item list-group-item-action" })
+    @Html.ActionLink("Średnia ilość stron", "GetAverageNumberOfPages", null, new { @class = "list-group-item list-group-item-action" })
+    @Html.ActionLink("Ilość unikalnych autorów", "GetUniqueNumberOfAuthors", null, new { @class = "list-group-item list-group-item-action" })
+    @using (Html.BeginForm("GetBooksContainingGivenPhrase", "GroupingQueries"))
+    {
+        <div class="list-group-item">
+            <table>
+                <tr>
+                    <th>
+                        <div class="form-group">
+                            <input id="phrase" name="phrase" class="form-control" required />
+                            <span class="text-danger"></span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-group">
+                            <input type="submit" value="Szukaj w tytułach" class="btn btn-primary" />
+                        </div>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    }
+</div>

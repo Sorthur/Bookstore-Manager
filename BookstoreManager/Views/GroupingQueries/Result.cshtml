@@ -1,0 +1,98 @@
+﻿@model BookstoreManager.Controllers.GroupingQueriesController
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="list-group">
+    @Html.ActionLink("Liczba książek", "GetNumberOfBooks", null, new { @class = "list-group-item list-group-item-action" })
+    @Html.ActionLink("Średnia ilość stron", "GetAverageNumberOfPages", null, new { @class = "list-group-item list-group-item-action" })
+    @Html.ActionLink("Ilość unikalnych autorów", "GetUniqueNumberOfAuthors", null, new { @class = "list-group-item list-group-item-action" })
+    @using (Html.BeginForm("GetBooksContainingGivenPhrase", "GroupingQueries"))
+    {
+        <div class="list-group-item">
+            <table>
+                <tr>
+                    <th>
+                        <div class="form-group">
+                            <input id="phrase" name="phrase" class="form-control" required />
+                            <span class="text-danger"></span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-group">
+                            <input type="submit" value="Szukaj w tytułach" class="btn btn-primary" />
+                        </div>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    }
+</div>
+
+@Model.Message
+
+@if (Model.Books != null && Model.Books.Count() > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().Author)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().Year)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().Edition)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().NumberOfPages)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().IsHardCover)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Books.FirstOrDefault().Quantity)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Books)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Author)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Year)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Edition)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberOfPages)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsHardCover)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+
+                        @Html.ActionLink("Edit", "Edit", "Books", new { Id = @item.Id }, null) |
+                        @Html.ActionLink("Delete", "Delete", "Books", new { Id = @item.Id }, null)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
