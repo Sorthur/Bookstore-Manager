@@ -139,6 +139,10 @@
     <Compile Include="Migrations\202006171748544_InitialMigration.designer.cs">
       <DependentUpon>202006171748544_InitialMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006181218291_AddedPricePropertyMigration.cs" />
+    <Compile Include="Migrations\202006181218291_AddedPricePropertyMigration.designer.cs">
+      <DependentUpon>202006181218291_AddedPricePropertyMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Order.cs" />
@@ -207,6 +211,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202006171748544_InitialMigration.resx">
       <DependentUpon>202006171748544_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006181218291_AddedPricePropertyMigration.resx">
+      <DependentUpon>202006181218291_AddedPricePropertyMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

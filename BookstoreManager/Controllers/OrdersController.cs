@@ -30,9 +30,15 @@ namespace BookstoreManager.Controllers
                         return View((object)"Nie ma tyle książek na magazynie");
                     }
 
+                    decimal orderPrice = book.Price * count;
+                    if (orderPrice < 40)
+                    {
+                        return View((object)$"Kwota zamówienia musi przekraczać 40zł; Aktualna kwota: {orderPrice}");
+                    }
+
                     book.Quantity -= count;
 
-                    var newOrder = new Order(book, count);
+                    var newOrder = new Order(book, count, orderPrice);
                     context.Orders.Add(newOrder);
 
                     await context.SaveChangesAsync();

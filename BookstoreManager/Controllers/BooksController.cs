@@ -37,7 +37,7 @@ namespace BookstoreManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Title,Author,Year,Edition,NumberOfPages,IsHardCover,Quantity")] Book book)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Title,Author,Year,Edition,NumberOfPages,IsHardCover,Quantity,Price")] Book book)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace BookstoreManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Author,Year,Edition,NumberOfPages,IsHardCover,Quantity")] Book book)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Author,Year,Edition,NumberOfPages,IsHardCover,Quantity,Price")] Book book)
         {
             if (ModelState.IsValid)
             {
