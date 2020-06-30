@@ -21,24 +21,10 @@ namespace BookstoreManager.Controllers
                 {
                     var book = await context.Books.FindAsync(id);
 
-                    if (book == null || count <= 0)
-                    {
-                        return RedirectToAction("Index", "Books");
-                    }
-                    else if (book.Quantity < count)
-                    {
-                        return View((object)"Nie ma tyle książek na magazynie");
-                    }
-
-                    decimal orderPrice = book.Price * count;
-                    if (orderPrice < 40)
-                    {
-                        return View((object)$"Kwota zamówienia musi przekraczać 40zł; Aktualna kwota: {orderPrice}");
-                    }
 
                     book.Quantity -= count;
 
-                    var newOrder = new Order(book, count, orderPrice);
+                    var newOrder = new Order(book, count, 0);
                     context.Orders.Add(newOrder);
 
                     await context.SaveChangesAsync();

@@ -9,13 +9,24 @@ using System.Web;
 using System.Web.Mvc;
 using BookstoreManager.Data;
 using BookstoreManager.Models;
+using BookstoreManager.BookManager;
 using System.Data.SqlClient;
 using System.Data.Entity.Migrations;
+using BookstoreManager.Bootstrap;
 
 namespace BookstoreManager.Controllers
 {
     public class BooksController : Controller
     {
+        private IBookManager _bookManager;
+        public BooksController()
+        {
+            var kernel = new DiConfig().GetKernel();
+        }
+        public BooksController(IBookManager bookManager)
+        {
+            _bookManager = bookManager;
+        }
         public async Task<ActionResult> Index()
         {
             using (var context = new DatabaseContext())
@@ -41,14 +52,15 @@ namespace BookstoreManager.Controllers
         {
             if (ModelState.IsValid)
             {
+                var bookManager = new BookManager.BookManager();
+                if (bookManager.BookExists(book))
+                {
+                    return View("BookExists");
+                }
                 using (var context = new DatabaseContext())
                 {
                     try
                     {
-                        if (context.Books.Any(b => b.Title == book.Title) && context.Books.Any(b => b.Edition == book.Edition))
-                        {
-                            return View("BookExists");
-                        }
                         context.Books.Add(book);
                         await context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
