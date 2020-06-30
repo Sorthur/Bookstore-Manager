@@ -1,5 +1,6 @@
 ﻿using BookstoreManager.Data;
 using BookstoreManager.Models;
+using BookstoreManager.OrderManager;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,6 +14,11 @@ namespace BookstoreManager.Controllers
 {
     public class OrdersController : Controller
     {
+        private IOrderManager _orderManager;
+        public OrdersController(IOrderManager orderManager)
+        {
+            _orderManager = orderManager;
+        }
         public async Task<ActionResult> Index(int id, int count)
         {
             using (var context = new DatabaseContext())
@@ -20,7 +26,10 @@ namespace BookstoreManager.Controllers
                 try
                 {
                     var book = await context.Books.FindAsync(id);
-
+                    if (!_orderManager.IsOrderPossible(book, count))
+                    {
+                        return View((object)_orderManager.GetMessage());
+                    }
 
                     book.Quantity -= count;
 

@@ -14,7 +14,9 @@ namespace BookstoreManager.BookManager
         {
             using (var context = new DatabaseContext())
             {
-                if (context.Books.Any(b => b.Title == book.Title) && context.Books.Any(b => b.Edition == book.Edition))
+                if (context.Books.Any(b => b.Title == book.Title
+                && b.Edition == book.Edition
+                && b.IsAvailable == true))
                 {
                     return true;
                 }

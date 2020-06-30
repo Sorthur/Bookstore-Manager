@@ -8,7 +8,8 @@ namespace BookstoreManager.OrderManager
 {
     public class OrderManager : IOrderManager
     {
-        public string Message { get; set; }
+        private string Message;
+
         public bool IsOrderPossible(Book book, int count)
         {
             if (book == null)
@@ -34,6 +35,11 @@ namespace BookstoreManager.OrderManager
                 return false;
             }
             return true;
+        }
+
+        public string GetMessage()
+        {
+            return Message;
         }
     }
 }

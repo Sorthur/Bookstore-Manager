@@ -10,5 +10,6 @@ namespace BookstoreManager.OrderManager
     public interface IOrderManager
     {
         bool IsOrderPossible(Book book, int count);
+        string GetMessage();
     }
 }
