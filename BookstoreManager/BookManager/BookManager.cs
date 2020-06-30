@@ -10,11 +10,11 @@ namespace BookstoreManager.BookManager
 {
     public class BookManager : IBookManager
     {
-        public bool BookExists(Book book)
+        public bool BookExists(List<Book> books, Book book)
         {
             using (var context = new DatabaseContext())
             {
-                if (context.Books.Any(b => b.Title == book.Title
+                if (books.Any(b => b.Title == book.Title
                 && b.Edition == book.Edition
                 && b.IsAvailable == true))
                 {

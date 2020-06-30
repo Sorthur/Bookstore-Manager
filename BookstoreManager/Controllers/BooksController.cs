@@ -52,16 +52,17 @@ namespace BookstoreManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                var bookManager = new BookManager.BookManager();
-                if (bookManager.BookExists(book))
-                {
-                    return View("BookExists");
-                }
                 using (var context = new DatabaseContext())
                 {
                     try
                     {
-                        context.Books.Add(book);
+                        var books = context.Books.ToList();
+                        var bookManager = new BookManager.BookManager();
+                        if (bookManager.BookExists(books, book))
+                        {
+                            return View("BookExists");
+                        }
+                        books.Add(book);
                         await context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
                     }

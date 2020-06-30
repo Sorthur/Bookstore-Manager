@@ -9,6 +9,6 @@ namespace BookstoreManager.BookManager
 {
     public interface IBookManager
     {
-        bool BookExists(Book book);
+        bool BookExists(List<Book> books, Book book);
     }
 }
