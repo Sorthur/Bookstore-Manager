@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookstoreManager.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,68 @@ namespace BookstoreManager.Tests
 {
     public class BookManagerTests
     {
+        [Theory]
+        [InlineData("book99", 1, true)]
+        [InlineData("book1", 2, true)]
+        [InlineData("book2", 2, false)]
+        [InlineData("book3", 3, true)]
+        public void Should_ReturnFalse_When_BookDoesntExist(string title, int edition, bool isAvailable)
+        {
+            // Arrange
+            var bookManager = new BookManager.BookManager();
+            var books = new List<Book>
+            {
+                CreateTestingBook("book1", 1, true),
+                CreateTestingBook("book2", 2, true),
+                CreateTestingBook("book3", 3, false)
+            };
+            var book = CreateTestingBook(title, edition, isAvailable);
+
+            // Act
+            bookManager.BookExists(books, book);
+
+
+            // Assert
+            Assert.DoesNotContain(book, books);
+        }
+
+        [Theory]
+        [InlineData("book1", 1, true)]
+        [InlineData("book2", 2, true)]
+        public void Should_ReturnTrue_When_BookExists(string title, int edition, bool isAvailable)
+        {
+            // Arrange
+            var bookManager = new BookManager.BookManager();
+            var books = new List<Book>
+            {
+                CreateTestingBook("book1", 1, true),
+                CreateTestingBook("book2", 2, true),
+                CreateTestingBook("book3", 3, false)
+            };
+            var book = CreateTestingBook(title, edition, isAvailable);
+
+            // Act
+            bookManager.BookExists(books, book);
+
+
+            // Assert
+            Assert.DoesNotContain(book, books);
+        }
+
+        private Book CreateTestingBook(string title, int edition, bool isAvailable)
+        {
+            return new Book
+            {
+                Title = title,
+                Author = "",
+                Year = 0,
+                Edition = edition,
+                NumberOfPages = 0,
+                IsHardCover = false,
+                Quantity = 0,
+                IsAvailable = isAvailable,
+                Price = 0
+            };
+        }
     }
 }
