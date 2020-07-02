@@ -16,47 +16,25 @@ namespace BookstoreManager.Tests
         [Theory]
         [InlineData("book99", 1, true)]
         [InlineData("book1", 2, true)]
-        [InlineData("book2", 2, false)]
+        [InlineData("book2_", 2, true)]
         [InlineData("book3", 3, true)]
         public void Should_ReturnFalse_When_BookDoesntExist(string title, int edition, bool isAvailable)
         {
-            // Arrange
-            //var bookManager = new BookManager.BookManager();
-            var books = new List<Book>
-            {
-                CreateTestingBook("book1", 1, true),
-                CreateTestingBook("book2", 2, true),
-                CreateTestingBook("book3", 3, false)
-            };
+            bool expected = false;
+            var mock = AutoMock.GetLoose();
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBooksAsync())
+                .Returns(Task.FromResult(GetSampleBooks()));
 
-            using (var mock = AutoMock.GetLoose())
-            {
-                mock.Mock<Data.IDatabaseManager>()
-                    .Setup(x => x.GetAvailableBooksAsync().Result) //todo ma to sens?
-                    .Returns(GetSampleBooks());
-
-                //var cls = mock.Create<BookManager.BookManager>();
-                //var transfersService = new TransfersService(accountsServiceMock.Object);
-                //accountsServiceMock.Setup(x => x.GetBalance()).Returns(1000);
-
-                var mock2 = new Mock<Data.IDatabaseManager>();
-                mock2.Setup(x => x.GetAvailableBooksAsync().Result) // todo ma to sens?
-                    .Returns(GetSampleBooks());
-                var cls = new BookManager.BookManager(mock2.Object);
-
-
-                var gor = cls.GetBooks();
-                gor = gor;
-            }
-
+            var bookManagerMock = mock.Create<BookManager.BookManager>();
+            var books = bookManagerMock.GetBooks();
             var book = CreateTestingBook(title, edition, isAvailable);
 
             // Act
-            //bookManager.BookExists(books, book);
-
+            bool actual = bookManagerMock.BookExists(books, book);
 
             // Assert
-            Assert.DoesNotContain(book, books);
+            Assert.Equal(expected, actual);
         }
 
         [Theory]
