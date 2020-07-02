@@ -82,7 +82,26 @@ namespace BookstoreManager.Tests
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData(0, 10, 100, 10)]
+        [InlineData(0, 100, 100, 1)]
+        public void Should_ReturnTrue_When_OrderPossible(int bookId, int count, int bookQuantity, decimal bookPrice)
+        {
+            // Arrange
+            bool expected = true;
+            var mock = AutoMock.GetLoose();
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBookAsync(bookId))
+                .Returns(Task.FromResult(CreateTestingBook("", 0, true, bookQuantity, bookPrice)));
 
+            var orderManagerMock = mock.Create<OrderManager.OrderManager>();
+
+            // Act
+            bool actual = orderManagerMock.IsOrderPossibleAsync(bookId, count).Result;
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
         private List<Book> GetSampleBooks()
         {
