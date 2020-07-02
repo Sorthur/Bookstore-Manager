@@ -20,10 +20,6 @@ namespace BookstoreManager.Controllers
     {
         private IBookManager _bookManager;
         private IDatabaseManager _databaseManager;
-        //public BooksController()
-        //{
-        //    var kernel = new DiConfig().GetKernel();
-        //}
 
         public BooksController(IBookManager bookManager, IDatabaseManager databaseManager)
         {
@@ -33,20 +29,14 @@ namespace BookstoreManager.Controllers
 
         public async Task<ActionResult> Index()
         {
-            //using (var context = new DatabaseContext())
-            //{
             try
             {
-                //return View(context.Books.Where(b => b.IsAvailable == true).ToListAsync());
                 return View(await _databaseManager.GetAvailableBooksAsync());
-                //var books = await _databaseManager.GetAvailableBooksAsync();
-                //return View(books);
             }
             catch (SqlException)
             {
                 return View("../Error/NoDb");
             }
-            //}
         }
 
         public ActionResult Create()
@@ -59,19 +49,8 @@ namespace BookstoreManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //using (var context = new DatabaseContext())
-                //{
                 try
                 {
-                    //    var books = context.Books.ToList();
-                    //    var bookManager = new BookManager.BookManager();
-                    //    if (bookManager.BookExists(books, book))
-                    //    {
-                    //        return View("BookExists");
-                    //    }
-                    //    books.Add(book);
-                    //    await context.SaveChangesAsync();
-                    //    return RedirectToAction(nameof(Index));
                     var books = await _databaseManager.GetAvailableBooksAsync();
                     if (_bookManager.BookExists(books, book))
                     {
@@ -84,7 +63,6 @@ namespace BookstoreManager.Controllers
                 {
                     return View("../Error/NoDb");
                 }
-                //}
             }
             return View(book);
         }
@@ -97,16 +75,8 @@ namespace BookstoreManager.Controllers
 
             }
 
-            //using (var context = new DatabaseContext())
-            //{
             try
             {
-                //var book = await context.Books.FindAsync(id);
-                //if (book == null)
-                //{
-                //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                //}
-                //return View(book);
                 var book = await _databaseManager.GetAvailableBookAsync(id.Value);
                 if (book == null)
                 {
@@ -118,7 +88,6 @@ namespace BookstoreManager.Controllers
             {
                 return View("../Error/NoDb");
             }
-            //}
         }
 
         [HttpPost]
@@ -126,13 +95,8 @@ namespace BookstoreManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //using (var context = new DatabaseContext())
-                //{
-                //context.Books.AddOrUpdate(book);
-                //await context.SaveChangesAsync();
                 await _databaseManager.EditBookAsync(book);
                 return RedirectToAction(nameof(Index));
-                //}
             }
             return View(book);
         }
@@ -144,12 +108,8 @@ namespace BookstoreManager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            //using (var context = new DatabaseContext())
-            //{
             try
             {
-                //var book = await context.Books
-                //    .FirstOrDefaultAsync(m => m.Id == id);
                 var book = await _databaseManager.GetAvailableBookAsync(id.Value);
                 if (book == null)
                 {
@@ -161,20 +121,14 @@ namespace BookstoreManager.Controllers
             {
                 return View("../Error/NoDb");
             }
-            //}
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            //using (var context = new DatabaseContext())
-            //{
             try
             {
-                //var book = await context.Books.FindAsync(id);
-                //book.IsAvailable = false;
-                //await context.SaveChangesAsync();
                 await _databaseManager.DeleteBookAsync(id);
                 return RedirectToAction(nameof(Index));
             }
@@ -182,7 +136,6 @@ namespace BookstoreManager.Controllers
             {
                 return View("../Error/NoDb");
             }
-            //}
         }
     }
 }

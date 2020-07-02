@@ -29,19 +29,10 @@ namespace BookstoreManager.Controllers
             {
                 try
                 {
-                    //var book = await context.Books.FindAsync(id);
-                    //var book = await _databaseManager.GetAvailableBookAsync(id);
                     if (!await _orderManager.IsOrderPossibleAsync(id, count))
                     {
                         return View((object)_orderManager.GetMessage());
                     }
-
-                    //book.Quantity -= count;
-
-                    //var newOrder = new Order(book, count, 0);
-                    //context.Orders.Add(newOrder);
-
-                    //await context.SaveChangesAsync();
                     await _orderManager.OrderBookAsync(id, count);
                     return View((object)_orderManager.GetMessage());
                 }
@@ -58,12 +49,6 @@ namespace BookstoreManager.Controllers
             {
                 try
                 {
-                    //var orders = await context.Orders.ToListAsync();
-                    //orders = await context.Orders
-                    //    .Include(b => b.OrderedBook)
-                    //    .ToListAsync();
-
-                    //return View(orders);
                     return View(await _databaseManager.GetOrdersAsync());
                 }
                 catch (SqlException)
