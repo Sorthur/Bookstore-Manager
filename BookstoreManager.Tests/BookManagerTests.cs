@@ -43,24 +43,24 @@ namespace BookstoreManager.Tests
         public void Should_ReturnTrue_When_BookExists(string title, int edition, bool isAvailable)
         {
             // Arrange
-            //var bookManager = new BookManager.BookManager();
-            var books = new List<Book>
-            {
-                CreateTestingBook("book1", 1, true),
-                CreateTestingBook("book2", 2, true),
-                CreateTestingBook("book3", 3, false)
-            };
+            bool expected = true;
+            var mock = AutoMock.GetLoose();
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBooksAsync())
+                .Returns(Task.FromResult(GetSampleBooks()));
+
+            var bookManagerMock = mock.Create<BookManager.BookManager>();
+            var books = bookManagerMock.GetBooks();
             var book = CreateTestingBook(title, edition, isAvailable);
 
             // Act
-            //bookManager.BookExists(books, book);
-
+            bool actual = bookManagerMock.BookExists(books, book);
 
             // Assert
-            Assert.DoesNotContain(book, books);
+            Assert.Equal(expected, actual);
         }
 
-        private static List<Book> GetSampleBooks()
+        private List<Book> GetSampleBooks()
         {
             return new List<Book>
             {
@@ -70,7 +70,7 @@ namespace BookstoreManager.Tests
             };
         }
 
-        private static Book CreateTestingBook(string title, int edition, bool isAvailable)
+        private Book CreateTestingBook(string title, int edition, bool isAvailable)
         {
             return new Book
             {
