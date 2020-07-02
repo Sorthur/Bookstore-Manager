@@ -1,17 +1,25 @@
-﻿using BookstoreManager.Models;
+﻿using BookstoreManager.Data;
+using BookstoreManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace BookstoreManager.OrderManager
 {
     public class OrderManager : IOrderManager
     {
+        private IDatabaseManager _databaseManager;
         private string Message;
-
-        public bool IsOrderPossible(Book book, int count)
+        public OrderManager(IDatabaseManager databaseManager)
         {
+            _databaseManager = databaseManager;
+        }
+
+        public async Task<bool> IsOrderPossibleAsync(int bookId, int count)
+        {
+            var book = await _databaseManager.GetAvailableBookAsync(bookId);
             if (book == null)
             {
                 Message = "Nie można zamówić danej książki";
@@ -35,6 +43,17 @@ namespace BookstoreManager.OrderManager
                 return false;
             }
             return true;
+        }
+
+        public async Task OrderBookAsync(int bookId, int count)
+        {
+            var book = await _databaseManager.GetAvailableBookAsync(bookId);
+            book.Quantity -= count;
+            var newOrder = new Order(book, count, book.Price * count);
+
+            await _databaseManager.EditBookAsync(book);
+            await _databaseManager.AddOrder(newOrder);
+            Message = $"Powstało nowe zamowienie na książkę \"{book.Title}\" w ilości: {count}";
         }
 
         public string GetMessage()

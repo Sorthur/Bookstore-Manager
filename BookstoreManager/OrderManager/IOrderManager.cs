@@ -9,7 +9,8 @@ namespace BookstoreManager.OrderManager
 {
     public interface IOrderManager
     {
-        bool IsOrderPossible(Book book, int count);
+        Task<bool> IsOrderPossibleAsync(int bookId, int count);
+        Task OrderBookAsync(int bookId, int count);
         string GetMessage();
     }
 }
