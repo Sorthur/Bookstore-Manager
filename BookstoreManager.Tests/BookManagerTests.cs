@@ -5,6 +5,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -98,6 +99,37 @@ namespace BookstoreManager.Tests
 
             // Act
             bool actual = orderManagerMock.IsOrderPossibleAsync(bookId, count).Result;
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public async void Should_DecreaseBookQuantityByOne_When_BookWasOrdered()
+        {
+            // Arrange
+            int expected = 0;
+            int count = 1;
+            var book = CreateTestingBook("", 0, true, 1, 0);
+            var mock = AutoMock.GetLoose();
+
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBookAsync(0))
+                .Returns(Task.FromResult(book));
+
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.EditBookAsync(null))
+                .Returns(async (Book b) => b.Quantity -= count); /////
+
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.AddOrder(null))
+                .Returns(Task.FromResult(0));
+
+            var orderManagerMock = mock.Create<OrderManager.OrderManager>();
+
+            // Act
+            await orderManagerMock.OrderBookAsync(0, count);
+            int actual = book.Quantity;
 
             // Assert
             Assert.Equal(expected, actual);
