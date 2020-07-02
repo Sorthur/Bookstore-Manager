@@ -6,6 +6,7 @@ namespace BookstoreManager.App_Start
     using System;
     using System.Web;
     using BookstoreManager.BookManager;
+    using BookstoreManager.Data;
     using BookstoreManager.OrderManager;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
@@ -64,6 +65,7 @@ namespace BookstoreManager.App_Start
         {
             kernel.Bind<IBookManager>().To<BookManager>();
             kernel.Bind<IOrderManager>().To<OrderManager>();
+            kernel.Bind<IDatabaseManager>().To<DatabaseManager>();
         }
     }
 }
