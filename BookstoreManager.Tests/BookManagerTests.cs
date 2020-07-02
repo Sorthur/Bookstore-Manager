@@ -28,7 +28,7 @@ namespace BookstoreManager.Tests
 
             var bookManagerMock = mock.Create<BookManager.BookManager>();
             var books = bookManagerMock.GetBooks();
-            var book = CreateTestingBook(title, edition, isAvailable);
+            var book = CreateTestingBook(title, edition, isAvailable, 0, 0);
 
             // Act
             bool actual = bookManagerMock.BookExists(books, book);
@@ -51,7 +51,7 @@ namespace BookstoreManager.Tests
 
             var bookManagerMock = mock.Create<BookManager.BookManager>();
             var books = bookManagerMock.GetBooks();
-            var book = CreateTestingBook(title, edition, isAvailable);
+            var book = CreateTestingBook(title, edition, isAvailable, 0, 0);
 
             // Act
             bool actual = bookManagerMock.BookExists(books, book);
@@ -64,13 +64,13 @@ namespace BookstoreManager.Tests
         {
             return new List<Book>
             {
-                CreateTestingBook("book1", 1, true),
-                CreateTestingBook("book2", 2, true),
-                CreateTestingBook("book3", 3, false)
+                CreateTestingBook("book1", 1, true, 0, 0),
+                CreateTestingBook("book2", 2, true, 0, 0),
+                CreateTestingBook("book3", 3, false, 0, 0)
             };
         }
 
-        private Book CreateTestingBook(string title, int edition, bool isAvailable)
+        private Book CreateTestingBook(string title, int edition, bool isAvailable, int quantity, decimal price)
         {
             return new Book
             {
@@ -80,9 +80,9 @@ namespace BookstoreManager.Tests
                 Edition = edition,
                 NumberOfPages = 0,
                 IsHardCover = false,
-                Quantity = 0,
+                Quantity = quantity,
                 IsAvailable = isAvailable,
-                Price = 0
+                Price = price
             };
         }
     }
