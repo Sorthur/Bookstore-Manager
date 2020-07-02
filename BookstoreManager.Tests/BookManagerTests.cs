@@ -1,4 +1,7 @@
-﻿using BookstoreManager.Models;
+﻿using Autofac.Extras.Moq;
+using BookstoreManager.BookManager;
+using BookstoreManager.Models;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,17 +21,38 @@ namespace BookstoreManager.Tests
         public void Should_ReturnFalse_When_BookDoesntExist(string title, int edition, bool isAvailable)
         {
             // Arrange
-            var bookManager = new BookManager.BookManager();
+            //var bookManager = new BookManager.BookManager();
             var books = new List<Book>
             {
                 CreateTestingBook("book1", 1, true),
                 CreateTestingBook("book2", 2, true),
                 CreateTestingBook("book3", 3, false)
             };
+
+            using (var mock = AutoMock.GetLoose())
+            {
+                mock.Mock<Data.IDatabaseManager>()
+                    .Setup(x => x.GetAvailableBooksAsync().Result) //todo ma to sens?
+                    .Returns(GetSampleBooks());
+
+                //var cls = mock.Create<BookManager.BookManager>();
+                //var transfersService = new TransfersService(accountsServiceMock.Object);
+                //accountsServiceMock.Setup(x => x.GetBalance()).Returns(1000);
+
+                var mock2 = new Mock<Data.IDatabaseManager>();
+                mock2.Setup(x => x.GetAvailableBooksAsync().Result) // todo ma to sens?
+                    .Returns(GetSampleBooks());
+                var cls = new BookManager.BookManager(mock2.Object);
+
+
+                var gor = cls.GetBooks();
+                gor = gor;
+            }
+
             var book = CreateTestingBook(title, edition, isAvailable);
 
             // Act
-            bookManager.BookExists(books, book);
+            //bookManager.BookExists(books, book);
 
 
             // Assert
@@ -41,7 +65,7 @@ namespace BookstoreManager.Tests
         public void Should_ReturnTrue_When_BookExists(string title, int edition, bool isAvailable)
         {
             // Arrange
-            var bookManager = new BookManager.BookManager();
+            //var bookManager = new BookManager.BookManager();
             var books = new List<Book>
             {
                 CreateTestingBook("book1", 1, true),
@@ -51,14 +75,24 @@ namespace BookstoreManager.Tests
             var book = CreateTestingBook(title, edition, isAvailable);
 
             // Act
-            bookManager.BookExists(books, book);
+            //bookManager.BookExists(books, book);
 
 
             // Assert
             Assert.DoesNotContain(book, books);
         }
 
-        private Book CreateTestingBook(string title, int edition, bool isAvailable)
+        private static List<Book> GetSampleBooks()
+        {
+            return new List<Book>
+            {
+                CreateTestingBook("book1", 1, true),
+                CreateTestingBook("book2", 2, true),
+                CreateTestingBook("book3", 3, false)
+            };
+        }
+
+        private static Book CreateTestingBook(string title, int edition, bool isAvailable)
         {
             return new Book
             {
