@@ -11,6 +11,13 @@ namespace BookstoreManager.Data
 {
     public class DatabaseManager : IDatabaseManager
     {
+        public bool DatabaseExists()
+        {
+            using (var context = new DatabaseContext())
+            {
+                return context.Database.Exists();
+            }
+        }
         public async Task AddBookAsync(Book book)
         {
             using (var context = new DatabaseContext())

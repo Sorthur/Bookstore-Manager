@@ -9,6 +9,7 @@ namespace BookstoreManager.Data
 {
     public interface IDatabaseManager
     {
+        bool DatabaseExists();
         Task<List<Book>> GetAvailableBooksAsync();
         Task<Book> GetAvailableBookAsync(int id);
         Task AddBookAsync(Book book);
