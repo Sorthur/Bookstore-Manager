@@ -12,7 +12,6 @@ using BookstoreManager.Models;
 using BookstoreManager.BookManager;
 using System.Data.SqlClient;
 using System.Data.Entity.Migrations;
-using BookstoreManager.Bootstrap;
 
 namespace BookstoreManager.Controllers
 {
