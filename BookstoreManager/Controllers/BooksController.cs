@@ -28,14 +28,11 @@ namespace BookstoreManager.Controllers
 
         public async Task<ActionResult> Index()
         {
-            try
-            {
-                return View(await _databaseManager.GetAvailableBooksAsync());
-            }
-            catch (SqlException)
+            if (!_databaseManager.DatabaseExists())
             {
                 return View("../Error/NoDb");
             }
+            return View(await _databaseManager.GetAvailableBooksAsync());
         }
 
         public ActionResult Create()
@@ -46,52 +43,53 @@ namespace BookstoreManager.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([Bind(Include = "Id,Title,Author,Year,Edition,NumberOfPages,IsHardCover,Quantity,Price")] Book book)
         {
+            if (!_databaseManager.DatabaseExists())
+            {
+                return View("../Error/NoDb");
+            }
+
             if (ModelState.IsValid)
             {
-                try
+                var books = await _databaseManager.GetAvailableBooksAsync();
+                if (_bookManager.BookExists(books, book))
                 {
-                    var books = await _databaseManager.GetAvailableBooksAsync();
-                    if (_bookManager.BookExists(books, book))
-                    {
-                        return View("BookExists");
-                    }
-                    await _databaseManager.AddBookAsync(book);
-                    return RedirectToAction(nameof(Index));
+                    return View("BookExists");
                 }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
+                await _databaseManager.AddBookAsync(book);
+                return RedirectToAction(nameof(Index));
             }
             return View(book);
         }
 
         public async Task<ActionResult> Edit(int? id)
         {
+            if (!_databaseManager.DatabaseExists())
+            {
+                return View("../Error/NoDb");
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             }
 
-            try
+            var book = await _databaseManager.GetAvailableBookAsync(id.Value);
+            if (book == null)
             {
-                var book = await _databaseManager.GetAvailableBookAsync(id.Value);
-                if (book == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                return View(book);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            catch (SqlException)
-            {
-                return View("../Error/NoDb");
-            }
+            return View(book);
         }
 
         [HttpPost]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Author,Year,Edition,NumberOfPages,IsHardCover,Quantity,Price")] Book book)
         {
+            if (!_databaseManager.DatabaseExists())
+            {
+                return View("../Error/NoDb");
+            }
+
             if (ModelState.IsValid)
             {
                 await _databaseManager.EditBookAsync(book);
@@ -102,39 +100,35 @@ namespace BookstoreManager.Controllers
 
         public async Task<ActionResult> Delete(int? id)
         {
+            if (!_databaseManager.DatabaseExists())
+            {
+                return View("../Error/NoDb");
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            try
+            var book = await _databaseManager.GetAvailableBookAsync(id.Value);
+            if (book == null)
             {
-                var book = await _databaseManager.GetAvailableBookAsync(id.Value);
-                if (book == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                return View(book);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            catch (SqlException)
-            {
-                return View("../Error/NoDb");
-            }
+            return View(book);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                await _databaseManager.DeleteBookAsync(id);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (SqlException)
+            if (!_databaseManager.DatabaseExists())
             {
                 return View("../Error/NoDb");
             }
+
+            await _databaseManager.DeleteBookAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

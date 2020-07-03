@@ -25,37 +25,28 @@ namespace BookstoreManager.Controllers
         }
         public async Task<ActionResult> Index(int id, int count)
         {
-            using (var context = new DatabaseContext())
+            if (!_databaseManager.DatabaseExists())
             {
-                try
-                {
-                    if (!await _orderManager.IsOrderPossibleAsync(id, count))
-                    {
-                        return View((object)_orderManager.GetMessage());
-                    }
-                    await _orderManager.OrderBookAsync(id, count);
-                    return View((object)_orderManager.GetMessage());
-                }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
+                return View("../Error/NoDb");
             }
+
+            if (!await _orderManager.IsOrderPossibleAsync(id, count))
+            {
+                return View((object)_orderManager.GetMessage());
+            }
+            await _orderManager.OrderBookAsync(id, count);
+            return View((object)_orderManager.GetMessage());
         }
 
         public async Task<ActionResult> AllOrders()
         {
-            using (var context = new DatabaseContext())
+            if (!_databaseManager.DatabaseExists())
             {
-                try
-                {
-                    return View(await _databaseManager.GetOrdersAsync());
-                }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
+                return View("../Error/NoDb");
             }
+
+            return View(await _databaseManager.GetOrdersAsync());
         }
     }
+}
 }
