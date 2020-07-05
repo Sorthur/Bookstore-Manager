@@ -12,6 +12,6 @@ namespace BookstoreManager.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Order> Orders { get; set; }
 
-        public DatabaseContext() : base(@"Data Source =.\SQLEXPRESS; Initial Catalog = mdejewski169657; Integrated Security = True") { }
+        public DatabaseContext() : base(@"Data Source =.\SQLEXPRESS; Initial Catalog = Lab5_mdejewski169657; Integrated Security = True") { }
     }
 }
