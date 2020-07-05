@@ -35,5 +35,17 @@ namespace BookstoreManager.Models
             Price = price;
             IsAvailable = true;
         }
+        public void EditBook(Book newBookValues)
+        {
+            Title = newBookValues.Title;
+            Author = newBookValues.Author;
+            Year = newBookValues.Year;
+            Edition = newBookValues.Edition;
+            NumberOfPages = newBookValues.NumberOfPages;
+            IsHardCover = newBookValues.IsHardCover;
+            Quantity = newBookValues.Quantity;
+            Price = newBookValues.Price;
+            IsAvailable = newBookValues.IsAvailable;
+        }
     }
 }

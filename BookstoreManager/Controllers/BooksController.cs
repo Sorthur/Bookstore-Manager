@@ -92,7 +92,7 @@ namespace BookstoreManager.Controllers
 
             if (ModelState.IsValid)
             {
-                await _databaseManager.EditBookAsync(book);
+                await _databaseManager.EditBookAsync(book, book.Id);
                 return RedirectToAction(nameof(Index));
             }
             return View(book);

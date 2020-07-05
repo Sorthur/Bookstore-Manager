@@ -13,9 +13,10 @@ namespace BookstoreManager.Data
         Task<List<Book>> GetAvailableBooksAsync();
         Task<Book> GetAvailableBookAsync(int id);
         Task AddBookAsync(Book book);
-        Task EditBookAsync(Book book);
+        Task EditBookAsync(Book newBook, int bookId);
+        Task DecreaseBookQuantity(int bookId, int count);
         Task DeleteBookAsync(int id);
-        Task AddOrder(Order order);
+        Task MakeNewOrder(int bookId, int numberOfOrderedBooks);
         Task<List<Order>> GetOrdersAsync();
 
     }

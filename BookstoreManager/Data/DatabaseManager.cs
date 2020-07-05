@@ -38,12 +38,22 @@ namespace BookstoreManager.Data
             }
         }
 
-        public async Task EditBookAsync(Book book)
+        public async Task EditBookAsync(Book newBook, int bookId)
         {
             using (var context = new DatabaseContext())
             {
-                context.Books.AddOrUpdate(book);
+                context.Books.FirstOrDefault(b => b.Id == bookId).EditBook(newBook);
                 await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DecreaseBookQuantity(int bookId, int count)
+        {
+            using (var context = new DatabaseContext())
+            {
+                var book = context.Books.SingleOrDefault(b => b.Id == bookId);
+                book.Quantity -= count;
+                context.SaveChanges();
             }
         }
 
@@ -75,10 +85,12 @@ namespace BookstoreManager.Data
             }
         }
 
-        public async Task AddOrder(Order order)
+        public async Task MakeNewOrder(int bookId, int numberOfOrderedBooks)
         {
             using (var context = new DatabaseContext())
             {
+                var book = context.Books.FirstOrDefault(b => b.Id == bookId);
+                var order = new Order(book, numberOfOrderedBooks, book.Price * numberOfOrderedBooks);
                 context.Orders.Add(order);
                 await context.SaveChangesAsync();
             }

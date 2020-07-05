@@ -47,13 +47,11 @@ namespace BookstoreManager.OrderManager
 
         public async Task OrderBookAsync(int bookId, int count)
         {
-            var book = await _databaseManager.GetAvailableBookAsync(bookId);
-            book.Quantity -= count;
-            var newOrder = new Order(book, count, book.Price * count);
 
-            await _databaseManager.EditBookAsync(book);
-            await _databaseManager.AddOrder(newOrder);
-            Message = $"Powstało nowe zamowienie na książkę \"{book.Title}\" w ilości: {count}";
+            await _databaseManager.DecreaseBookQuantity(bookId, count);
+            await _databaseManager.MakeNewOrder(bookId, count);
+            string bookTitle = (await _databaseManager.GetAvailableBookAsync(bookId)).Title;
+            Message = $"Powstało nowe zamowienie na książkę \"{bookTitle}\" w ilości: {count}";
         }
 
         public string GetMessage()
