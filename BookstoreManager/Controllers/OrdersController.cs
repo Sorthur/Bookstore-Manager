@@ -44,9 +44,8 @@ namespace BookstoreManager.Controllers
             {
                 return View("../Error/NoDb");
             }
-
             return View(await _databaseManager.GetOrdersAsync());
         }
     }
 }
-}
+

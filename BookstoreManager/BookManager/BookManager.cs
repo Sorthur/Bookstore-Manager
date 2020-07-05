@@ -31,9 +31,36 @@ namespace BookstoreManager.BookManager
             }
         }
 
-        public List<Book> GetBooks()
+        public List<Book> GetAvailableBooks()
         {
             return _databaseManager.GetAvailableBooksAsync().Result;
+        }
+
+        public int GetNumberOfBooks()
+        {
+            return GetAvailableBooks().Count;
+        }
+
+        public int GetAverageNumberOfPages()
+        {
+            try
+            {
+                return (int)GetAvailableBooks().Select(b => b.NumberOfPages).Average();
+            }
+            catch (InvalidOperationException)
+            {
+                return 0;
+            }
+        }
+
+        public int GetUniqueNumberOfAuthors()
+        {
+            return GetAvailableBooks().Select(b => b.Author).Distinct().Count();
+        }
+
+        public List<Book> GetBooksContainingGivenPhrase(string phrase)
+        {
+            return GetAvailableBooks().Where(b => b.Title.Contains(phrase)).ToList();
         }
     }
 }

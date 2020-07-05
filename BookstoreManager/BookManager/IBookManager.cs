@@ -10,7 +10,11 @@ namespace BookstoreManager.BookManager
     public interface IBookManager
     {
         bool BookExists(List<Book> books, Book book);
-        List<Book> GetBooks();
+        List<Book> GetAvailableBooks();
+        int GetNumberOfBooks();
+        int GetAverageNumberOfPages();
+        int GetUniqueNumberOfAuthors();
+        List<Book> GetBooksContainingGivenPhrase(string phrase);
 
     }
 }

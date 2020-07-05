@@ -28,7 +28,7 @@ namespace BookstoreManager.Tests
                 .Returns(Task.FromResult(GetSampleBooks()));
 
             var bookManagerMock = mock.Create<BookManager.BookManager>();
-            var books = bookManagerMock.GetBooks();
+            var books = bookManagerMock.GetAvailableBooks();
             var book = CreateTestingBook(title, edition, isAvailable, 0, 0);
 
             // Act
@@ -51,7 +51,7 @@ namespace BookstoreManager.Tests
                 .Returns(Task.FromResult(GetSampleBooks()));
 
             var bookManagerMock = mock.Create<BookManager.BookManager>();
-            var books = bookManagerMock.GetBooks();
+            var books = bookManagerMock.GetAvailableBooks();
             var book = CreateTestingBook(title, edition, isAvailable, 0, 0);
 
             // Act

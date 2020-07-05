@@ -1,4 +1,5 @@
-﻿using BookstoreManager.Data;
+﻿using BookstoreManager.BookManager;
+using BookstoreManager.Data;
 using BookstoreManager.Models;
 using System;
 using System.Collections.Generic;
@@ -16,83 +17,65 @@ namespace BookstoreManager.Controllers
         public string Message { get; set; }
         public List<Book> Books { get; set; }
 
+        private IDatabaseManager _databaseManager;
+        private IBookManager _bookManager;
+
+        public GroupingQueriesController(IBookManager bookManager, IDatabaseManager databaseManager)
+        {
+            _databaseManager = databaseManager;
+            _bookManager = bookManager;
+        }
+
         public ActionResult Index()
         {
+            if (!_databaseManager.DatabaseExists())
+            {
+                return View("../Error/NoDb");
+            }
             return View();
         }
 
         public async Task<ActionResult> GetNumberOfBooks()
         {
-            using (var context = new DatabaseContext())
+            if (!_databaseManager.DatabaseExists())
             {
-                try
-                {
-                    var count = await context.Books.Where(b => b.IsAvailable == true).CountAsync();
-                    Message = $"Liczba książek w bazie: {count}";
-                    return View("result", this);
-                }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
+                return View("../Error/NoDb");
             }
+            Message = $"Liczba książek w bazie: {_bookManager.GetNumberOfBooks()}";
+            return View("result", this);
         }
+
 
         public async Task<ActionResult> GetAverageNumberOfPages()
         {
-            using (var context = new DatabaseContext())
+            if (!_databaseManager.DatabaseExists())
             {
-                try
-                {
-                    var average = await context.Books.Where(b => b.IsAvailable == true).Select(b => b.NumberOfPages).AverageAsync();
-                    Message = $"Średnia ilość stron: {(int)average}";
-                }
-                catch (InvalidOperationException)
-                {
-                    Message = "Baza jest pusta";
-                }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
-                return View("result", this);
+                return View("../Error/NoDb");
             }
+            Message = $"Średnia ilość stron: {_bookManager.GetAverageNumberOfPages()}";
+            return View("result", this);
         }
 
         public async Task<ActionResult> GetUniqueNumberOfAuthors()
         {
-            using (var context = new DatabaseContext())
+            if (!_databaseManager.DatabaseExists())
             {
-                try
-                {
-                    var count = await context.Books.Where(b => b.IsAvailable == true).Select(b => b.Author).Distinct().CountAsync();
-                    Message = $"Liczba unikalnych autorów: {count}";
-                    return View("result", this);
-                }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
+                return View("../Error/NoDb");
             }
+            Message = $"Liczba unikalnych autorów: {_bookManager.GetUniqueNumberOfAuthors()}";
+            return View("result", this);
         }
 
         public async Task<ActionResult> GetBooksContainingGivenPhrase(string phrase)
         {
-            using (var context = new DatabaseContext())
+            if (!_databaseManager.DatabaseExists())
             {
-                try
-                {
-                    //var count = context.Books.Where(b => b.Title.Contains(phrase)).Count();
-                    Books = await context.Books.Where(b => b.Title.Contains(phrase) && b.IsAvailable == true).ToListAsync();
-                    var count = Books.Count();
-                    Message = $"Liczba książek zawierających \"{phrase}\" w tytule: {count}";
-                    return View("result", this);
-                }
-                catch (SqlException)
-                {
-                    return View("../Error/NoDb");
-                }
+                return View("../Error/NoDb");
             }
+            Books = _bookManager.GetBooksContainingGivenPhrase(phrase);
+            var count = Books.Count();
+            Message = $"Liczba książek zawierających \"{phrase}\" w tytule: {count}";
+            return View("result", this);
         }
     }
 }
