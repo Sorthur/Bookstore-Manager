@@ -21,6 +21,7 @@ namespace BookstoreManager.Tests
         [InlineData("book3", 3, true)]
         public void Should_ReturnFalse_When_BookDoesntExist(string title, int edition, bool isAvailable)
         {
+            // Arrange
             bool expected = false;
             var mock = AutoMock.GetLoose();
             mock.Mock<Data.IDatabaseManager>()
@@ -29,7 +30,7 @@ namespace BookstoreManager.Tests
 
             var bookManagerMock = mock.Create<BookManager.BookManager>();
             var books = bookManagerMock.GetAvailableBooks();
-            var book = CreateTestingBook(title, edition, isAvailable, 0, 0);
+            var book = CreateTestingBook(title: title, edition: edition, isAvailable: isAvailable);
 
             // Act
             bool actual = bookManagerMock.BookExists(books, book);
@@ -52,7 +53,7 @@ namespace BookstoreManager.Tests
 
             var bookManagerMock = mock.Create<BookManager.BookManager>();
             var books = bookManagerMock.GetAvailableBooks();
-            var book = CreateTestingBook(title, edition, isAvailable, 0, 0);
+            var book = CreateTestingBook(title: title, edition: edition, isAvailable: isAvailable);
 
             // Act
             bool actual = bookManagerMock.BookExists(books, book);
@@ -72,7 +73,7 @@ namespace BookstoreManager.Tests
             var mock = AutoMock.GetLoose();
             mock.Mock<Data.IDatabaseManager>()
                 .Setup(x => x.GetAvailableBookAsync(bookId))
-                .Returns(Task.FromResult(CreateTestingBook("", 0, true, bookQuantity, bookPrice)));
+                .Returns(Task.FromResult(CreateTestingBook(quantity: bookQuantity, price: bookPrice)));
 
             var orderManagerMock = mock.Create<OrderManager.OrderManager>();
 
@@ -93,7 +94,7 @@ namespace BookstoreManager.Tests
             var mock = AutoMock.GetLoose();
             mock.Mock<Data.IDatabaseManager>()
                 .Setup(x => x.GetAvailableBookAsync(bookId))
-                .Returns(Task.FromResult(CreateTestingBook("", 0, true, bookQuantity, bookPrice)));
+                .Returns(Task.FromResult(CreateTestingBook(quantity: bookQuantity, price: bookPrice)));
 
             var orderManagerMock = mock.Create<OrderManager.OrderManager>();
 
@@ -110,7 +111,7 @@ namespace BookstoreManager.Tests
             // Arrange
             int expected = 0;
             int count = 1;
-            var book = CreateTestingBook("", 0, true, 1, 0);
+            var book = CreateTestingBook(quantity: 1);
             var mock = AutoMock.GetLoose();
 
             mock.Mock<Data.IDatabaseManager>()
@@ -135,25 +136,106 @@ namespace BookstoreManager.Tests
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData(50, 100, 150)]
+        [InlineData(150, 100, 50)]
+        [InlineData(200, 90, 110, 0)]
+        public void Should_ReturnValidInteger_For_AveragePageNumber(params int[] numbersOfPages)
+        {
+            // Arrange
+            int expected = 100;
+            List<Book> books = new List<Book>();
+            foreach (var numberOfPages in numbersOfPages)
+            {
+                books.Add(CreateTestingBook(numberOfPages: numberOfPages));
+            }
+            var mock = AutoMock.GetLoose();
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBooksAsync())
+                .Returns(Task.FromResult(books));
+
+            var bookManagerMock = mock.Create<BookManager.BookManager>();
+
+            // Act
+            int actual = bookManagerMock.GetAverageNumberOfPages();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("Author1", "Author2", "Author3")]
+        [InlineData("Author1", "Author2", "Author3", "Author3")]
+        public void Should_ReturnValidInteger_For_UniqueNumberOfAuthors(params string[] authors)
+        {
+            // Arrange
+            int expected = 3;
+            List<Book> books = new List<Book>();
+            foreach (var author in authors)
+            {
+                books.Add(CreateTestingBook(author: author));
+            }
+            var mock = AutoMock.GetLoose();
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBooksAsync())
+                .Returns(Task.FromResult(books));
+
+            var bookManagerMock = mock.Create<BookManager.BookManager>();
+
+            // Act
+            int actual = bookManagerMock.GetUniqueNumberOfAuthors();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("ook", "Book1", "book2")]
+        [InlineData("ook", "Book1", "ok2", "book3")]
+        [InlineData("ook", "asdqwe", "book2", "book3")]
+        public void Should_ReturnValidNumberOfBooksContainingGivenPhrase(string phrase, params string[] titles)
+        {
+            // Arrange
+            int expected = 2;
+            List<Book> books = new List<Book>();
+            foreach (var title in titles)
+            {
+                books.Add(CreateTestingBook(title: title));
+            }
+            var mock = AutoMock.GetLoose();
+            mock.Mock<Data.IDatabaseManager>()
+                .Setup(x => x.GetAvailableBooksAsync())
+                .Returns(Task.FromResult(books));
+
+            var bookManagerMock = mock.Create<BookManager.BookManager>();
+
+            // Act
+            var booksWithPhrase = bookManagerMock.GetBooksContainingGivenPhrase(phrase);
+            int actual = booksWithPhrase.Count();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
         private List<Book> GetSampleBooks()
         {
             return new List<Book>
             {
-                CreateTestingBook("book1", 1, true, 0, 0),
-                CreateTestingBook("book2", 2, true, 0, 0),
-                CreateTestingBook("book3", 3, false, 0, 0)
+                CreateTestingBook(title:"book1", edition: 1, isAvailable: true),
+                CreateTestingBook(title:"book2", edition: 2, isAvailable: true),
+                CreateTestingBook(title:"book3", edition: 3, isAvailable: false),
             };
         }
 
-        private Book CreateTestingBook(string title, int edition, bool isAvailable, int quantity, decimal price)
+        private Book CreateTestingBook(string title = "", string author = "", int year = 0, int edition = 0, bool isAvailable = true, int quantity = 0, decimal price = 0, int numberOfPages = 0)
         {
             return new Book
             {
                 Title = title,
-                Author = "",
-                Year = 0,
+                Author = author,
+                Year = year,
                 Edition = edition,
-                NumberOfPages = 0,
+                NumberOfPages = numberOfPages,
                 IsHardCover = false,
                 Quantity = quantity,
                 IsAvailable = isAvailable,
