@@ -119,11 +119,11 @@ namespace BookstoreManager.Tests
                 .Returns(Task.FromResult(book));
 
             mock.Mock<Data.IDatabaseManager>()
-                .Setup(x => x.EditBookAsync(null))
-                .Returns(async (Book b) => b.Quantity -= count); /////
+                .Setup(x => x.DecreaseBookQuantity(0, 0))
+                .Returns(Task.FromResult(book.Quantity -= count));
 
             mock.Mock<Data.IDatabaseManager>()
-                .Setup(x => x.AddOrder(null))
+                .Setup(x => x.MakeNewOrder(0, 0))
                 .Returns(Task.FromResult(0));
 
             var orderManagerMock = mock.Create<OrderManager.OrderManager>();
