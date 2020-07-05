@@ -67,9 +67,10 @@ namespace BookstoreManager.Data
 
         public async Task<List<Book>> GetAvailableBooksAsync()
         {
+            // Tutaj async do wyrzucenia
             using (var context = new DatabaseContext())
             {
-                return await context.Books.Where(b => b.IsAvailable == true).ToListAsync();
+                return context.Books.Where(b => b.IsAvailable == true).ToList();
             }
         }
 
